@@ -9,6 +9,8 @@ import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.TextView;
 
+import java.io.Serializable;
+
 public class MainActivity extends AppCompatActivity {
 
   @VisibleForTesting
@@ -56,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     setClickListener(digit9,9,mainText);
 
     minus.setOnClickListener(v -> {
-      calculator.insertPlus();
+      calculator.insertMinus();
       mainText.setText(calculator.output());
     });
     clear.setOnClickListener(v -> {
@@ -94,12 +96,15 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onSaveInstanceState(@NonNull Bundle outState) {
     super.onSaveInstanceState(outState);
+    outState.putSerializable("curState",calculator.saveState());
     // todo: save calculator state into the bundle
   }
 
   @Override
   protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
     super.onRestoreInstanceState(savedInstanceState);
+    Serializable curState=savedInstanceState.getSerializable("curState");
+    calculator.loadState(curState);
     // todo: restore calculator state from the bundle, refresh main text-view from calculator's output
   }
   private void setClickListener(TextView view,int digit,TextView mainText) {
